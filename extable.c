@@ -168,6 +168,16 @@ lproxyget(lua_State *L) {
 }
 
 static int
+lproxylen(lua_State *L) {
+	lua_settop(L, 1);
+	struct extable *t = pretable(L);
+	size_t n = lua_rawlen(t->L, -2);
+	lua_pushinteger(L, n);
+	lua_pop(t->L, 2);
+	return 1;
+}
+
+static int
 lproxynext(lua_State *L) {
 	struct extable *t = pretable(L);
 	if (lua_next(t->L, -2) == 0) {
@@ -240,6 +250,10 @@ luaopen_extable(lua_State *L) {
 	lua_pushvalue(L, -1);
 	lua_pushcclosure(L, lproxyget, 1);	// binding metatable in upvale 1: UV_PROXY
 	lua_setfield(L, -2, "__index");
+
+	lua_pushvalue(L, -1);
+	lua_pushcclosure(L, lproxylen, 1);
+	lua_setfield(L, -2, "__len");
 
 	lua_pushvalue(L, -1);
 	lua_pushcclosure(L, lproxynext, 1);	
