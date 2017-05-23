@@ -21,6 +21,7 @@ newdb(lua_State *L, const char * source) {
 		lua_close(dL);
 		lua_error(L);
 	}
+	lua_gc(dL, LUA_GCCOLLECT,0);
 	return dL;
 }
 
